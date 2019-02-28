@@ -60,10 +60,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\GameController.cs" />
-    <Compile Include="Assets\QuestionDatabase.cs" />
-    <Compile Include="Assets\Questions.cs" />
-    <Compile Include="Assets\QuestionSet.cs" />
+    <Compile Include="Assets\Script\GameController.cs" />
+    <Compile Include="Assets\Script\QuestionDatabase.cs" />
+    <Compile Include="Assets\Script\Questions.cs" />
+    <Compile Include="Assets\Script\QuestionSet.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>C:/Users/zjjc1/Desktop/TriviaGameStructure/MobileTestProject/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
