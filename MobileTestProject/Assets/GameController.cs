@@ -4,15 +4,20 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
+    [SerializeField]
+    private int totalQuestions = 10;
+
     void Start()
     {
         QuestionDatabase.ImportGame("stuff.csv");
+        Questions.SetTotalQuestions(totalQuestions);
     }
 
     // Update is called once per frame
     void Update()
     {
-        QuestionSet q1 = new QuestionSet(3);
+        // HOW TO USE
+        QuestionSet q1 = Questions.GetQuestion(QuestionSet.Categories.AboutFBLA);
 
         Debug.Log(q1.Answer);
     }

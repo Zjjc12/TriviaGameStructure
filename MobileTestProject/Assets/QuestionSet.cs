@@ -11,6 +11,17 @@ public class QuestionSet
     private string choice4;
     private string answer;
 
+    private Categories category;
+
+
+    public enum Categories
+    {
+        CompetitveEvents,
+        BusinessSkills,
+        AboutFBLA,
+        FBLAHistory,
+        NationalOfficers
+    }
 
     public QuestionSet (int question)
     {
@@ -21,6 +32,29 @@ public class QuestionSet
         this.Choice3 = load(question, 3);
         this.Choice4 = load(question, 4);
         this.Answer = load(question, 5);
+        String stringCat = load(question, 6);
+        
+        switch (Convert.ToInt32(stringCat))
+        {
+            case 1:
+                this.category = Categories.CompetitveEvents;
+                break;
+            case 2:
+                this.category = Categories.BusinessSkills;
+                break;
+            case 3:
+                this.category = Categories.AboutFBLA;
+                break;
+            case 4:
+                this.category = Categories.FBLAHistory;
+                break;
+            case 5:
+                this.category = Categories.NationalOfficers;
+                break;
+            default:
+                this.category = Categories.CompetitveEvents;
+                break;
+        }
     }
 
     private string load(int question, int type)
@@ -84,6 +118,13 @@ public class QuestionSet
         get { return answer; }
         set { answer = value; }
     }
+
+    public Categories Category
+    {
+        get { return category; }
+        set { category = value; }
+    }
+
 
 
 }
