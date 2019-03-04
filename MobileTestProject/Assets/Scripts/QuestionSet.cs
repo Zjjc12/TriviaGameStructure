@@ -45,6 +45,7 @@ public class QuestionSet
         this.Choice4 = load(question, 4);
         this.Answer = load(question, 5);
         String stringCat = load(question, 6);
+
         // Set category from integer
         switch (Convert.ToInt32(stringCat))
         {
@@ -54,7 +55,7 @@ public class QuestionSet
             case 2:
                 this.category = Categories.BusinessSkills;
                 break;
-            case 3:
+            case 3: 
                 this.category = Categories.AboutFBLA;
                 break;
             case 4:
@@ -66,6 +67,7 @@ public class QuestionSet
             default:
                 // Defualt as Competitive Events
                 Debug.LogError("ERROR: Categories can only be from 1 - 5");
+
                 this.category = Categories.CompetitveEvents;
                 break;
         }
@@ -75,6 +77,7 @@ public class QuestionSet
     // Used to return string from the lists in the Question Database
     private string load(int question, int type)
     {
+
         List<string> list = new List<string>();
         switch (type)
         {
@@ -101,7 +104,8 @@ public class QuestionSet
                 break;
             default:
                 // Default get the question string
-                Debug.LogError("ERROR: Type Can Only Be From 0 - 5");
+                //Debug.LogError("ERROR: Type Can Only Be From 0 - 5");
+
                 list = QuestionDatabase.questions;
                 break;
         }
@@ -113,7 +117,7 @@ public class QuestionSet
     {
         get { return question; }
         set { question = value; }
-    }
+    }   
     public string Choice1
     {
         get { return choice1; }

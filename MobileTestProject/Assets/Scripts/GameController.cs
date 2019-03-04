@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 using System;
-
 
 public class GameController : MonoBehaviour
 {
@@ -16,9 +16,11 @@ public class GameController : MonoBehaviour
     * 
     */
 
+    // Game Objects : Question
     [SerializeField]
     private GameObject questionsText;
 
+    // Game Objects : Choices
     [SerializeField]
     private GameObject choice1Text;
     [SerializeField]
@@ -28,64 +30,103 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private GameObject choice4Text;
 
+
+
     // Current Question
     private int currentQNum = 0;
     private QuestionSet currentQuestion;
 
     // Stats
-    private int numCorrect = 0;
+    public static int numCorrect = 0;
   
 
     // Start of program
     void Start()
     {
-        // Always run the following in order
-
-        // Imports questions to lists of strings from csv
-        QuestionDatabase.ImportGame("Old");
-        // Load all the strings into lists of Question Set Objects organized by categories
-        Questions.LoadAllQuestions();
-
-        // Get first question based on the choosenTopic
+        // Get question based on the chosenTopic
         currentQNum++;
-        SetQuestion(Questions.GetQuestion(Topic.choosenTopic));
+        SetQuestion(Questions.GetQuestion(Topic.chosenTopic));
     }
 
-    public void Choosed1()
+    // 
+    public void Chosen1()
     {
-        ChoosedAnswer(1);
+        ChosenAnswer(1);
     }
-    public void Choosed2()
+    public void Chosen2()
     {
-        ChoosedAnswer(2);
-    }
-
-    public void Choosed3()
-    {
-        ChoosedAnswer(3);
+        ChosenAnswer(2);
     }
 
-    public void Choosed4()
+    public void Chosen3()
     {
-        ChoosedAnswer(4);
+        ChosenAnswer(3);
     }
 
-    private void ChoosedAnswer(int a)
+    public void Chosen4()
     {
+        ChosenAnswer(4);
+    }
+
+    private void ChosenAnswer(int a)
+    {
+        bool didLose = false;
+        if (Int32.Parse(currentQuestion.Answer) != a)
+        {
+            GetButtonImage(a).color = Color.red; 
+            Vibration.CreateOneShot(200);
+            Debug.Log("Incorrect!! Correct choice is " + Int32.Parse(currentQuestion.Answer) + " you chose " + a);
+            didLose = true;
+            //Debug.Log("vibrate");
+        }
+        GetButtonImage(Int32.Parse(currentQuestion.Answer)).color = Color.green;
         if (Int32.Parse(currentQuestion.Answer) == a)
         {
             numCorrect++;
             Debug.Log("Correct!!");
         }
-        else
-        {
-            Debug.Log("Incorrect!! Correct choice is " + Int32.Parse(currentQuestion.Answer) + " you chose " + a);
-            Vibration.CreateOneShot(200);
-            Debug.Log("vibrate");
-        }
-        SetQuestion(Questions.GetQuestion(Topic.choosenTopic));
+
+        choice1Text.GetComponentInParent<Button>().enabled = false;
+        choice2Text.GetComponentInParent<Button>().enabled = false;
+        choice3Text.GetComponentInParent<Button>().enabled = false;
+        choice4Text.GetComponentInParent<Button>().enabled = false;
+
+        StartCoroutine(ExecuteAfterTime(2, didLose));
+        //SetQuestion(Questions.GetQuestion(Topic.chosenTopic));
     }
 
+    //Get image of the button based on which question you selected (a = 1-4)
+    private Image GetButtonImage(int a)
+    {
+        switch (a)
+        {
+            case 1:
+                return choice1Text.GetComponentInParent<Image>();
+            case 2:
+                return choice2Text.GetComponentInParent<Image>();
+            case 3:
+                return choice3Text.GetComponentInParent<Image>();
+            case 4:
+                return choice4Text.GetComponentInParent<Image>();
+            default:
+                Debug.LogError("Question choice can only be 1-4");
+                return null;
+        }
+    }
+
+
+    IEnumerator ExecuteAfterTime(float time, bool didLose)
+    {
+        // 10 second delay
+        yield return new WaitForSeconds(time);
+
+        // if you get 10 questions right, turn to end screen
+        if (numCorrect == 10 || didLose) 
+            SceneManager.LoadScene("End");
+        // else, continue to play
+        else
+            SceneManager.LoadScene("Topic");
+    }
 
     // Update is called once per frame
     void Update()
@@ -95,7 +136,7 @@ public class GameController : MonoBehaviour
         // === QuestionSet q1 = Questions.GetQuestion(QuestionSet.Categories.AboutFBLA);
 
         // Use getters and setter to access and change the information
-        // === Debug.Log(q1.Answer);
+        // === Debug.Log(q1.Answer); 
 
         /* Testing Code
         if (Input.GetKeyDown(KeyCode.Space))
@@ -117,7 +158,7 @@ public class GameController : MonoBehaviour
         choice4Text.GetComponent<TextMeshProUGUI>().text = q.Choice4;
         currentQuestion = q;
 
-        Debug.Log("New Questions: " + q.Question);
+        //Debug.Log("New Questions: " + q.Question);
     }
 
 

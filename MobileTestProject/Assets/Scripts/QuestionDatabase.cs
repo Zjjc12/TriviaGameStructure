@@ -36,8 +36,9 @@ public static class QuestionDatabase
     public static void ImportGame(string path)
     {
         TextAsset qs = Resources.Load<TextAsset>(path);
+        //Debug.Log(qs.text);
 
-        string[] data = qs.text.Split(new char[] {'\n'});
+        string[] data = qs.text.Split('\n');
 
         questions = new List<string>();
         choice1s = new List<string>();
@@ -48,6 +49,7 @@ public static class QuestionDatabase
         categories = new List<string>();
 
 
+        Debug.Log("Total Questions: " + data.Length);
         for (int i = 1; i < data.Length - 1; i++)
         {
             string[] row = data[i].Split(new char[] {','});
