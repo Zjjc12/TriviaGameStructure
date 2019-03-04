@@ -21,25 +21,51 @@ public static class Questions
     public static List<QuestionSet> NationalOfficers;
 
     public static int QuestionCount = 0;
+    public static List<QuestionSet> questionsUsed = new List<QuestionSet>();
 
-    public static QuestionSet GetQuestion(QuestionSet.Categories cat)
+    public static QuestionSet ReturnQuestion(QuestionSet.Categories cat)
     {
+
+
         while (true)
         {
-            System.Random rnd = new System.Random();
-            int randomQ = rnd.Next(0, QuestionDatabase.questions.Count);
+            List<QuestionSet> qList;
 
-            QuestionSet q = new QuestionSet(randomQ);
-            if (q.Category == cat)
+            if (cat == QuestionSet.Categories.AboutFBLA)
             {
-                return q;
+                qList = AboutFBLA;
+            }
+            else if (cat == QuestionSet.Categories.BusinessSkills)
+            {
+                qList = BusinessSkills;
+            }
+            else if (cat == QuestionSet.Categories.CompetitveEvents)
+            {
+                qList = CompetitveEvents;
+            }
+            else if (cat == QuestionSet.Categories.FBLAHistory)
+            {
+                qList = FBLAHistory;
             }
             else
             {
-                q = null;
+                qList = NationalOfficers;
+            }
+
+            System.Random rnd = new System.Random();
+            int randomQ = rnd.Next(0, qList.Count - 1);
+
+            QuestionSet q = qList[randomQ];
+
+            if (q.Used == false)
+            {
+                q.Used = true;
+                questionsUsed.Add(q);
+                return q;
             }
         }
     }
+    
 
     public static void LoadAllQuestions()
     {
