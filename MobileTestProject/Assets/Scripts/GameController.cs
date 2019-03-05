@@ -29,8 +29,8 @@ public class GameController : MonoBehaviour
     private GameObject choice3Text;
     [SerializeField]
     private GameObject choice4Text;
-
-
+    [SerializeField]
+    private GameObject timeText;
 
     // Current Question
     private int currentQNum = 0;
@@ -38,6 +38,8 @@ public class GameController : MonoBehaviour
 
     // Stats
     public static int numCorrect = 0;
+
+    float currCountdownValue;
   
 
     // Start of program
@@ -46,6 +48,7 @@ public class GameController : MonoBehaviour
         // Get question based on the chosenTopic
         currentQNum++;
         SetQuestion(Questions.ReturnQuestion(Topic.chosenTopic));
+        StartCoroutine(StartCountdown());
     }
 
     // 
@@ -71,12 +74,20 @@ public class GameController : MonoBehaviour
     private void ChosenAnswer(int a)
     {
         bool didLose = false;
-        if (Int32.Parse(currentQuestion.Answer) != a)
+        if(a == -1)
+        {
+            for(int i = 1; i <= 4; i++)
+                GetButtonImage(i).color = Color.red;
+            didLose = true;
+            FindObjectOfType<MusicManager>().Play("Incorrect");
+        }
+        else if (Int32.Parse(currentQuestion.Answer) != a)
         {
             GetButtonImage(a).color = Color.red; 
             Vibration.CreateOneShot(200);
             Debug.Log("Incorrect!! Correct choice is " + Int32.Parse(currentQuestion.Answer) + " you chose " + a);
             didLose = true;
+            FindObjectOfType<MusicManager>().Play("Incorrect");
             //Debug.Log("vibrate");
         }
         GetButtonImage(Int32.Parse(currentQuestion.Answer)).color = Color.green;
@@ -84,6 +95,7 @@ public class GameController : MonoBehaviour
         {
             numCorrect++;
             Debug.Log("Correct!!");
+            FindObjectOfType<MusicManager>().Play("Correct");
         }
 
         choice1Text.GetComponentInParent<Button>().enabled = false;
@@ -92,7 +104,6 @@ public class GameController : MonoBehaviour
         choice4Text.GetComponentInParent<Button>().enabled = false;
 
         StartCoroutine(ExecuteAfterTime(2, didLose));
-        //SetQuestion(Questions.GetQuestion(Topic.chosenTopic));
     }
 
     //Get image of the button based on which question you selected (a = 1-4)
@@ -118,7 +129,9 @@ public class GameController : MonoBehaviour
     IEnumerator ExecuteAfterTime(float time, bool didLose)
     {
         // 10 second delay
+        Debug.Log("Timer Started");
         yield return new WaitForSeconds(time);
+        Debug.Log("Timer Finished");
 
         // if you get 10 questions right, turn to end screen
         if (numCorrect == 10 || didLose) 
@@ -126,6 +139,19 @@ public class GameController : MonoBehaviour
         // else, continue to play
         else
             SceneManager.LoadScene("Topic");
+    }
+
+    public IEnumerator StartCountdown(float countdownValue = 15)
+    {
+        currCountdownValue = countdownValue;
+        while (currCountdownValue > 0)
+        {
+            Debug.Log("Countdown: " + currCountdownValue);
+            timeText.GetComponent<TextMeshProUGUI>().text = "Time: " + currCountdownValue;
+            yield return new WaitForSeconds(1.0f);
+            currCountdownValue--;
+        }
+        ChosenAnswer(-1);
     }
 
     // Update is called once per frame
